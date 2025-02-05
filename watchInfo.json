@@ -1,0 +1,33 @@
+[
+    {
+        "watchInformation" : {
+            "serialNumber": "SN1234567890",
+        "model": "Model X",
+        "collection": "Luxury Collection",
+        "dateOfManufacture": "2023-01-01",
+        "authorizedDealer": "Authorized Dealer Name"
+        },
+
+        "currentOwnerRecord": {
+        "ownerId": "001",
+        "ownerName": "John Doe",
+        "transferDate": "2023-01-01",
+        "contactNumber": "1234567890",
+        "email": "johndoe@example.com"
+        },
+
+        "ownershipRecords": {
+            "ownerId": "001",
+            "ownerName": "John Doe",
+            "transferDate": "2023-01-01",
+            "contactNumber": "1234567890",
+            "email": "johndoe@example.com"
+        },
+
+        "serviceHistory": {
+            "serviceDate": "2023-06-15",
+            "details": "Battery replacement",
+            "replacementParts": "Battery"
+        }
+    }
+]

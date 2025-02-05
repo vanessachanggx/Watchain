@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/css/styles.css">
+  <title>Watchain</title>
+</head>
+<body>
+  <%- include('partial/navbar'); %>
+  <h2>ROLEX WATCHES</h2>
+  <% if (watch && watch.length > 0) { %>
+    <div class="watch-grid">
+      <% watch.forEach(watch => { %>
+        <div class="watch-card">
+          <img src="<%= watch.public %>" alt="<%= watch.name %>">
+          <h3><%= watch.name %></h3>
+          <a href="/watch/<%= watch.id %>">View Details</a>
+        </div>
+      <% }); %>
+    </div>
+  <% } else { %>
+    <p>No watches available at the moment.</p>
+  <% } %>
+</body>
+</html>

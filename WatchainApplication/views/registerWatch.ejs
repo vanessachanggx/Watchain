@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/css/styles.css">
+  <title>Watch Registration</title>
+</head>
+<body>
+  <%- include('partial/navbar'); %>
+  
+  <!-- Add Image Here -->
+  <div class="image-container text-center">
+    <img src="/images/rolex-logo.png" alt="Rolex Logo" class="img-fluid">
+  </div>
+  
+  <h2>Register a Rolex Watch</h2>
+  
+  <!-- Form to register the watch with image upload -->
+  <form action="/" method="POST" enctype="multipart/form-data">
+    <label for="serialNumber">Serial Number:</label>
+    <input type="text" id="serialNumber" name="serialNumber" required>
+
+    <label for="model">Model:</label>
+    <input type="text" id="model" name="model" required>
+
+    <label for="collection">Collection:</label>
+    <input type="text" id="collection" name="collection" required>
+
+    <label for="dateOfManufacture">Date of Manufacture:</label>
+    <input type="date" id="dateOfManufacture" name="dateOfManufacture" required>
+
+    <label for="authorizedDealer">Authorized Dealer:</label>
+    <input type="text" id="authorizedDealer" name="authorizedDealer" required>
+
+    <label for="initialOwnerId">Initial Owner ID:</label>
+    <input type="text" id="initialOwnerId" name="initialOwnerId" required>
+
+    <label for="initialOwnerName">Initial Owner Name:</label>
+    <input type="text" id="initialOwnerName" name="initialOwnerName" required>
+
+    <label for="initialOwnerContact">Initial Owner Contact Number:</label>
+    <input type="text" id="initialOwnerContact" name="initialOwnerContact" required>
+
+    <label for="initialOwnerEmail">Initial Owner Email:</label>
+    <input type="email" id="initialOwnerEmail" name="initialOwnerEmail" required>
+
+    <label for="purchaseDate">Purchase Date:</label>
+    <input type="date" id="purchaseDate" name="purchaseDate" required>
+
+    <!-- New Image Upload Input -->
+    <label for="watchImage">Watch Image:</label>
+    <input type="file" id="watchImage" name="watchImage" accept="image/*" required>
+
+    <button type="submit">Register Watch</button>
+  </form>
+</body>
+</html>

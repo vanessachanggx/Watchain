@@ -1,26 +1,217 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="/css/styles.css">
-  <title>Watchain</title>
+    <title>Watchain</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            font-family: 'Public Sans';
+             background-color:#e6e2df;
+        }
+
+        .navbar {
+            background-color: #766B62;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+        }
+
+        .account-info {
+            color: white;
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            font-size: 0.9rem;
+        }
+
+        /* Override the general navbar link style for register button */
+        .navbar .register-btn {
+            font-size: 1rem;
+            font-weight: normal;
+        }
+
+        .welcome-banner {
+            background: linear-gradient(to right, #766B62, #8E837B);
+            color: white;
+            text-align: center;
+            padding: 3rem 1rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .welcome-banner h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+        
+        .welcome-banner p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.6;
+            font-weight: 400;
+        }        
+        
+        .watch-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 2rem;
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .watch-card-link {
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+        
+        .watch-card-link:hover {
+            text-decoration: none;
+        }
+        
+        .watch-card {
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            transition: transform 0.2s;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            width: 100%;
+        }
+
+        .watch-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .watch-image-container {
+            flex: 1;
+            padding: 1rem;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .watch-image {
+            width: 100%;
+            height: 200px;
+            object-fit: contain;
+        }
+
+        .watch-info {
+            background-color: #766B62;
+            padding: 1rem;
+            text-align: center;
+        }
+
+        .watch-model {
+            color: white;
+            font-size: 1.1rem;
+            font-weight: bold;
+        }
+
+        .watch-details {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.2);
+            z-index: 1000;
+            max-width: 80%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 999;
+        }
+
+        .close-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            cursor: pointer;
+            font-size: 24px;
+        }
+    </style>
 </head>
 <body>
-  <%- include('partial/navbar'); %>
-  <h2>ROLEX WATCHES</h2>
-  <% if (watch && watch.length > 0) { %>
-    <div class="watch-grid">
-      <% watch.forEach(watch => { %>
-        <div class="watch-card">
-          <img src="<%= watch.public %>" alt="<%= watch.name %>">
-          <h3><%= watch.name %></h3>
-          <a href="/watch/<%= watch.id %>">View Details</a>
+
+    <nav class="navbar navbar-expand-sm">
+        <div class="container-fluid">
+            <a class="navbar-brand text-white" href="/">
+                <i class="material-icons">watch</i> WATCHAIN
+            </a>
+            <div class="collapse navbar-collapse" id="collapsibleNavbar">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="/registerWatch">Register Watches</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="/about">About Us</a>
+                    </li>
+                </ul>
+            </div>
+            <span class="account-info">Account: <%= acct %></span>
         </div>
-      <% }); %>
-    </div>
-  <% } else { %>
-    <p>No watches available at the moment.</p>
-  <% } %>
+    </nav>
+    
+    <div class="welcome-banner">
+        <h1>Welcome to WATCHAIN</h1>
+        <p>Your Trusted Platform for Rolex Authentication & Verification</p>
+    </div>    
+    <div class="watch-grid">
+        <% if (watches && watches.length > 0) { %>
+            <% watches.forEach(function(watch) { %>
+                <a href="/watch/<%= watch.id %>" class="watch-card-link">
+                    <div class="watch-card">
+                        <div class="watch-image-container">
+                            <img src="/images/<%= watch.watchInfo.watchImage %>" 
+                                alt="<%= watch.watchInfo.model %>" 
+                                class="watch-image">
+                        </div>
+                        <div class="watch-info">
+                            <div class="watch-model"><%= watch.watchInfo.model %></div>
+                        </div>
+                    </div>
+                </a>
+            <% }); %>
+        <% } else { %>
+            <p>No watches available</p>
+        <% } %>
+    </div>    
 </body>
 </html>

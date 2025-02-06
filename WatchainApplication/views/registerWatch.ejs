@@ -1,58 +1,183 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="/css/styles.css">
-  <title>Watch Registration</title>
+    <title>Watchain- Register Watch</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Public Sans', sans-serif;
+            background-color: #e6e2df;
+        }
+
+        .navbar {
+            background-color: #766B62;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+        }
+        .account-info {
+            color: white;
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            font-size: 0.9rem;
+        }
+
+        .welcome-banner {
+            background: linear-gradient(to right, #766B62, #8E837B);
+            color: white;
+            text-align: center;
+            padding: 3rem 1rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .welcome-banner h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+
+        /* Form Styles */
+        .registration-form {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        form {
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        label {
+            font-weight: 500;
+            color: #333;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        input {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+            font-family: 'Public Sans', sans-serif;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #766B62;
+        }
+
+        button[type="submit"] {
+            background-color: #766B62;
+            color: white;
+            padding: 1rem;
+            border: none;
+            border-radius: 4px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #8E837B;
+        }
+
+        .image-container {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .image-container img {
+            max-width: 200px;
+            height: auto;
+        }
+    </style>
 </head>
 <body>
-  <%- include('partial/navbar'); %>
-  
-  <!-- Add Image Here -->
-  <div class="image-container text-center">
-    <img src="/images/rolex-logo.png" alt="Rolex Logo" class="img-fluid">
-  </div>
-  
-  <h2>Register a Rolex Watch</h2>
-  
-  <!-- Form to register the watch with image upload -->
-  <form action="/" method="POST" enctype="multipart/form-data">
-    <label for="serialNumber">Serial Number:</label>
-    <input type="text" id="serialNumber" name="serialNumber" required>
+    
+    <nav class="navbar navbar-expand-sm">
+        <div class="container-fluid">
+            <a class="navbar-brand text-white" href="/">
+                <i class="material-icons">watch</i> WATCHAIN
+            </a>
+            <div class="collapse navbar-collapse" id="collapsibleNavbar">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="/registerWatch">Register Watches</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="/about">About Us</a>
+                    </li>
+                </ul>
+            </div>
+            <span class="account-info">Account: <%= acct %></span>
+        </div>
+    </nav>
 
-    <label for="model">Model:</label>
-    <input type="text" id="model" name="model" required>
+    <div class="welcome-banner">
+        <h1>Register Your Rolex</h1>
+        <p>Enter your timepiece details for authentication and verification</p>
+    </div>
 
-    <label for="collection">Collection:</label>
-    <input type="text" id="collection" name="collection" required>
+    <div class="registration-form">
+        <form action="/" method="POST" enctype="multipart/form-data">
+            <label for="serialNumber">Serial Number:</label>
+            <input type="text" id="serialNumber" name="serialNumber" required>
 
-    <label for="dateOfManufacture">Date of Manufacture:</label>
-    <input type="date" id="dateOfManufacture" name="dateOfManufacture" required>
+            <label for="model">Model:</label>
+            <input type="text" id="model" name="model" required>
 
-    <label for="authorizedDealer">Authorized Dealer:</label>
-    <input type="text" id="authorizedDealer" name="authorizedDealer" required>
+            <label for="collection">Collection:</label>
+            <input type="text" id="collection" name="collection" required>
 
-    <label for="initialOwnerId">Initial Owner ID:</label>
-    <input type="text" id="initialOwnerId" name="initialOwnerId" required>
+            <label for="dateOfManufacture">Date of Manufacture:</label>
+            <input type="date" id="dateOfManufacture" name="dateOfManufacture" required>
 
-    <label for="initialOwnerName">Initial Owner Name:</label>
-    <input type="text" id="initialOwnerName" name="initialOwnerName" required>
+            <label for="authorizedDealer">Authorized Dealer:</label>
+            <input type="text" id="authorizedDealer" name="authorizedDealer" required>
 
-    <label for="initialOwnerContact">Initial Owner Contact Number:</label>
-    <input type="text" id="initialOwnerContact" name="initialOwnerContact" required>
+            <label for="initialOwnerId">Initial Owner ID:</label>
+            <input type="text" id="initialOwnerId" name="initialOwnerId" required>
 
-    <label for="initialOwnerEmail">Initial Owner Email:</label>
-    <input type="email" id="initialOwnerEmail" name="initialOwnerEmail" required>
+            <label for="initialOwnerName">Initial Owner Name:</label>
+            <input type="text" id="initialOwnerName" name="initialOwnerName" required>
 
-    <label for="purchaseDate">Purchase Date:</label>
-    <input type="date" id="purchaseDate" name="purchaseDate" required>
+            <label for="initialOwnerContact">Initial Owner Contact Number:</label>
+            <input type="text" id="initialOwnerContact" name="initialOwnerContact" required>
 
-    <!-- New Image Upload Input -->
-    <label for="watchImage">Watch Image:</label>
-    <input type="file" id="watchImage" name="watchImage" accept="image/*" required>
+            <label for="initialOwnerEmail">Initial Owner Email:</label>
+            <input type="email" id="initialOwnerEmail" name="initialOwnerEmail" required>
 
-    <button type="submit">Register Watch</button>
-  </form>
+            <label for="purchaseDate">Purchase Date:</label>
+            <input type="date" id="purchaseDate" name="purchaseDate" required>
+
+            <label for="watchImage">Watch Image:</label>
+            <input type="file" id="watchImage" name="watchImage" accept="image/*" required>
+
+            <button type="submit">Register Watch</button>
+        </form>
+    </div>
 </body>
 </html>

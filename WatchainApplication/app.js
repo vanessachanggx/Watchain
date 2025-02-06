@@ -5,14 +5,13 @@ const fs = require("fs");
 const Watchain = require('./build/Watchain.json');
 const multer = require('multer');
 
-// Set up multer for file uploads
 const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, './public/images'); // Directory to save uploaded files
-  },
-  filename: (req, file, cb) => {
-    cb(null, file.originalname); 
-  }
+    destination: (req, file, cb) => {
+        cb(null, 'public/images'); // Directory to save uploaded files
+    },
+    filename: (req, file, cb) => {
+        cb(null, file.originalname);
+    }
 });
 const upload = multer({ storage: storage });
 
@@ -21,10 +20,6 @@ const app = express();
 app.set('view engine', 'ejs');
 app.use(express.static('public')); // Enable static files (such as images, CSS, JS)
 app.use(express.urlencoded({ extended: false })); // Enable form processing
-
-// Start the server
-const PORT = process.env.PORT || 3001;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 
 var GanacheWeb3;
 var account = '';
@@ -114,70 +109,122 @@ async function loadBlockchainData() {
 
 // Define formatting functions for the blockchain data
 function formatWatchInfo(watchInfo) {
-  return {
-    serialNumber: watchInfo[0], // Example of extracting serial number
-    model: watchInfo[1],         // Example of extracting model
-    collection: watchInfo[2],    // Example of extracting collection
-    dateOfManufacture: watchInfo[3], // Example of extracting date of manufacture
-    authorizedDealer: watchInfo[4],  // Example of extracting authorized dealer
-  };
+    return {
+        serialNumber: watchInfo[0],
+        model: watchInfo[1],        
+        collection: watchInfo[2],    
+        dateOfManufacture: watchInfo[3],
+        authorizedDealer: watchInfo[4], 
+        watchImage: watchInfo[5]  // Changed from 'image' to 'watchImage'
+    };
 }
 
 function formatOwnershipInfo(ownershipInfo) {
   return {
-    ownerId: ownershipInfo[0],     // Example of extracting ownerId
-    ownerName: ownershipInfo[1],   // Example of extracting ownerName
-    ownerContact: ownershipInfo[2], // Example of extracting ownerContact
-    ownerEmail: ownershipInfo[3],  // Example of extracting ownerEmail
+    ownerId: ownershipInfo[0],    
+    ownerName: ownershipInfo[1], 
+    contact: ownershipInfo[2], // Changed from ownerContact
+    email: ownershipInfo[3],  // Changed from ownerEmail
+    transferDate: ownershipInfo[4] // Remove date formatting here  
+      
   };
 }
 
 function formatServiceHistoryInfo(serviceHistoryInfo) {
   return {
-    serviceDate: serviceHistoryInfo[0],  // Example of extracting service date
-    serviceDetails: serviceHistoryInfo[1], // Example of extracting service details
+    serviceDate: serviceHistoryInfo[0],  
+    serviceDetails: serviceHistoryInfo[1],
   };
 }
-
-app.get('/', async (req, res) => {
-    console.log("home page");
-    await componentWillMount();
-    console.log(loading); // Logs the loading status
-    res.render('index', { acct: account, cnt: NoOfWatches, watch: listOfWatches, status: loading });
-});
 
 // In your Express app, add this new endpoint:
 app.get('/loading-status', (req, res) => {
     res.json({ loading: loading });
 });
 
-// Define routes - to add the pet using the path /addPet
+//In your Express app, add this new endpoint:
+app.get('/loading-status', (req, res) => {
+    res.json({ loading: loading });
+  });
+
+  app.get('/', async (req, res) => {
+    console.log("home page");
+    try {
+        await componentWillMount();
+        console.log(loading);
+        res.render('index', { 
+            acct: account, 
+            cnt: NoOfWatches, 
+            watches: listOfWatches,
+            loading: false,
+            Image: 'default.jpg' // Add a default image if needed
+        });
+    } catch (error) {
+        console.error('Error loading watches:', error);
+        res.render('index', {
+            acct: account,
+            cnt: 0,
+            watches: [],
+            status: false,
+            Image: 'default.jpg'
+        });
+    }
+});
+
+app.get('/watch/:id', async (req, res) => {
+    try {
+        const watchId = req.params.id;
+        
+        // Get watch details from smart contract
+        const [watchInfo, ownershipInfo, serviceHistoryInfo] = await Promise.all([
+            contractInfo.methods.getWatchInfo(watchId).call(),
+            contractInfo.methods.getCurrentOwner(watchId).call(),
+            contractInfo.methods.getServiceHistory(watchId).call()
+        ]);
+
+        const watchDetails = {
+            id: watchId,
+            watchInfo: formatWatchInfo(watchInfo),
+            ownership: formatOwnershipInfo(ownershipInfo),
+            serviceHistory: formatServiceHistoryInfo(serviceHistoryInfo)
+        };
+
+        res.render('watchDetails', { 
+            watch: watchDetails,
+            acct: account
+        });
+    } catch (error) {
+        console.error('Error fetching watch details:', error);
+        res.status(404).send('Watch not found');
+    }
+});
+
+// Define routes - to add the watch using the path /registerWatch
 app.get('/registerWatch', (req, res) => {
     res.render('registerWatch', { acct: account} ); 
 });
 
 app.post('/', upload.single('watchImage'), async (req, res) => {
-    console.log('Request body:', req.body); // Log the data being received
+    console.log('Request body:', req.body);
     const {
         serialNumber, model, collection, dateOfManufacture,
         authorizedDealer, initialOwnerId, initialOwnerName,
         initialOwnerContact, initialOwnerEmail, purchaseDate
     } = req.body;
 
-    // Ensure all fields are present and properly validated before calling the contract
+    // Ensure all fields are present
     if (!serialNumber || !model || !collection || !dateOfManufacture || !authorizedDealer ||
         !initialOwnerId || !initialOwnerName || !initialOwnerContact || !initialOwnerEmail || !purchaseDate) {
         return res.status(400).send('All fields are required.');
     }
 
-
     try {
-        // Explicitly convert BigInt to string if needed
-        const stringSerialNumber = serialNumber.toString(); // Ensure it's a string
-        const stringOwnerId = initialOwnerId.toString();     // Ensure it's a string
+        // Initialize watchImagePath from the uploaded file
+        const watchImagePath = req.file ? req.file.filename : null;
 
-        // Convert the purchase date to ISO string
-        const formattedPurchaseDate = new Date(purchaseDate).toISOString(); // Convert date to string
+        const stringSerialNumber = serialNumber.toString();
+        const stringOwnerId = initialOwnerId.toString();    
+        const formattedPurchaseDate = new Date(purchaseDate).toISOString();
 
         // Estimate gas required for the transaction
         const estimatedGas = await contractInfo.methods.registerWatch(
@@ -186,14 +233,14 @@ app.post('/', upload.single('watchImage'), async (req, res) => {
             initialOwnerContact, initialOwnerEmail, formattedPurchaseDate, watchImagePath
         ).estimateGas({ from: account });
 
-        // Send the transaction with an increased gas limit
+        // Send the transaction
         await contractInfo.methods.registerWatch(
             stringSerialNumber, model, collection, dateOfManufacture,
             authorizedDealer, stringOwnerId, initialOwnerName,
             initialOwnerContact, initialOwnerEmail, formattedPurchaseDate, watchImagePath
         ).send({ 
             from: account, 
-            gas: BigInt(estimatedGas) + BigInt(50000) // Adding a buffer to the estimated gas
+            gas: BigInt(estimatedGas) + BigInt(50000)
         });
 
         res.send('Watch registered successfully!');
@@ -203,3 +250,7 @@ app.post('/', upload.single('watchImage'), async (req, res) => {
     }
 });
 
+
+// Start the server
+const PORT = process.env.PORT || 3001;
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
